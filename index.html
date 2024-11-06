@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Teste do Sistema de Alarme</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            position: relative;
+        }
+        h1 {
+            font-weight: bold;
+            text-align: center; /* Centraliza o título */
+            margin-top: 0;
+        }
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            max-width: 200px; /* Tamanho máximo do logo */
+            max-height: 200px;
+        }
+        .form-section {
+            margin-bottom: 20px;
+            padding-top: 50px; /* Adiciona espaço extra para o logo */
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        .checkbox-group {
+            margin-bottom: 10px;
+        }
+        .signature-box {
+            border: 1px solid #000;
+            height: 100px;
+            width: 100%;
+            touch-action: none; /* Facilita a assinatura no celular */
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Adicionando o logo -->
+    <img src="imagens/Logo.png" alt="Logo" class="logo">
+
+    <h1>OSS-SP-HSE-F044 - Formulário de Teste do Sistema de Alarme</h1>
+
+    <!-- Formulário com ação do Formspree -->
+    <form action="https://formspree.io/f/xvgoakqv" method="POST">
+        <div class="form-section">
+            <label>Data: <input type="date" name="data"></label>
+            <label>Local: <input type="text" name="local"></label>
+            <label>Brigadista: <input type="text" name="brigadista"></label>
+            <label>Turno: <input type="text" name="turno"></label>
+        </div>
+
+        <h2>Sinal Sonoro - Alarme de Emergência</h2>
+        <div class="form-section">
+            <label>
+                O Alarme tocou em sua área? 
+                <input type="checkbox" name="alarme_tocou" value="sim"> SIM
+                <input type="checkbox" name="alarme_tocou" value="nao"> NÃO
+            </label>
+            <label>
+                O toque foi audível a todos? 
+                <input type="checkbox" name="audivel" value="sim"> SIM
+                <input type="checkbox" name="audivel" value="nao"> NÃO
+            </label>
+            <label>
+                O tempo de disparo do alarme foi suficiente para reconhecê-lo? 
+                <input type="checkbox" name="tempo_suficiente" value="sim"> SIM
+                <input type="checkbox" name="tempo_suficiente" value="nao"> NÃO
+            </label>
+            <label>
+                A população local consegue reconhecer que trata-se do sinal sonoro do alarme de emergência? 
+                <input type="checkbox" name="reconhecimento" value="sim"> SIM
+                <input type="checkbox" name="reconhecimento" value="nao"> NÃO
+            </label>
+        </div>
+
+        <label>Observações:</label>
+        <textarea name="observacoes_alarme"></textarea>
+
+        <h2>Comportamento da população durante o teste:</h2>
+        <div class="form-section">
+            <label>
+                Abandonaram o local? 
+                <input type="checkbox" name="abandonaram" value="sim"> SIM
+                <input type="checkbox" name="abandonaram" value="nao"> NÃO
+            </label>
+            <label>
+                Pararam de trabalhar? 
+                <input type="checkbox" name="pararam" value="sim"> SIM
+                <input type="checkbox" name="pararam" value="nao"> NÃO
+            </label>
+            <label>
+                Tiveram dúvidas? 
+                <input type="checkbox" name="duvidas" value="sim"> SIM
+                <input type="checkbox" name="duvidas" value="nao"> NÃO
+            </label>
+        </div>
+
+        <label>Observações:</label>
+        <textarea name="observacoes_comportamento"></textarea>
+
+        <h2>Assinatura:</h2>
+        <div class="signature-box"></div>
+
+        <button type="submit">Enviar</button>
+    </form>
+
+    <script>
+        // Script simples para registrar assinatura (para fins de demonstração)
+        const signatureBox = document.querySelector('.signature-box');
+        let isDrawing = false;
+
+        signatureBox.addEventListener('mousedown', () => { isDrawing = true; });
+        signatureBox.addEventListener('mouseup', () => { isDrawing = false; });
+        signatureBox.addEventListener('mousemove', draw);
+
+        function draw(event) {
+            if (!isDrawing) return;
+            // Código para desenhar na signatureBox
+        }
+    </script>
+</body>
+</html>
