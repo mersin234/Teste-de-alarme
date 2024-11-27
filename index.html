@@ -194,6 +194,7 @@
         document.getElementById('send-report').addEventListener('click', () => {
             const form = document.getElementById('alarmForm');
             const formData = new FormData(form);
+            mode: 'no-cors', // Força o envio sem validar CORS
 
             // Converte a assinatura para imagem
             const signatureImage = signatureBox.toDataURL("image/png");
