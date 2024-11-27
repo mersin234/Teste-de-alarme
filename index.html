@@ -193,11 +193,36 @@
 
         document.getElementById('send-report').addEventListener('click', () => {
             const form = document.getElementById('alarmForm');
-            html2canvas(form).then((canvas) => {
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL();
-                link.download = 'formulario_alarme.png';
-                link.click();
+            html2canvas(form).then(canvas => {
+                const imageData = canvas.toDataURL('image/png');
+                const formData = {
+                    _replyto: "bombeirotaubate@slb.com.com",
+                    _subject: "Relatório de Teste do Sistema de Alarme",
+                    imagem: imageData,
+                    data: document.getElementById('data').value,
+                    local: document.getElementById('local').value,
+                    brigadista: document.getElementById('brigadista').value,
+                    turno: document.getElementById('turno').value
+                };
+
+                fetch("https://formspree.io/f/xvgoakqv", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Relatório enviado com sucesso!");
+                    } else {
+                        alert("Erro ao enviar o relatório.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro:", error);
+                    alert("Erro ao enviar o relatório.");
+                });
             });
         });
     </script>
