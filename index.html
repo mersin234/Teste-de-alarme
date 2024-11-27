@@ -55,17 +55,16 @@
             border: none;
             cursor: pointer;
         }
-        /* Responsividade para telas menores */
         @media (max-width: 600px) {
             .logo {
                 max-width: 100px;
             }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-    <!-- Formulário com integração Formspree -->
-    <form id="alarmForm" action="https://formspree.io/f/xvgoakqv" method="POST">
+    <form id="alarmForm">
         <div class="logo-container">
             <img src="imagens/Logo.png" alt="Logo" class="logo">
             <h1>OSS-SP-HSE-F044 - Formulário de Teste do Sistema de Alarme</h1>
@@ -135,7 +134,6 @@
     </form>
 
     <script>
-        // Script para permitir assinatura no canvas
         const signatureBox = document.querySelector('.signature-box');
         const ctx = signatureBox.getContext('2d');
         let isDrawing = false;
@@ -189,8 +187,25 @@
 
         // Captura a assinatura como imagem ao enviar o formulário
         document.getElementById('alarmForm').addEventListener('submit', function(event) {
-            const dataURL = signatureBox.toDataURL('image/png');
-            document.getElementById('assinatura').value = `<img src="${dataURL}"/>`; // Formata a assinatura como uma tag de imagem
+            event.preventDefault();
+
+            html2canvas(signatureBox).then(canvas => {
+                const dataURL = canvas.toDataURL('image/png');
+                const formData = new FormData(document.getElementById('alarmForm'));
+                formData.append('assinatura', dataURL);
+
+                fetch('YOUR_BACKEND_ENDPOINT', { // Substitua 'YOUR_BACKEND_ENDPOINT' pelo endpoint do seu backend
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert('Formulário enviado com sucesso!');
+                })
+                .catch(error => {
+                    console.error('Erro ao enviar o formulário:', error);
+                });
+            });
         });
     </script>
 </body>
