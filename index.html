@@ -190,7 +190,7 @@
         // Captura a assinatura como imagem ao enviar o formulário
         document.getElementById('alarmForm').addEventListener('submit', function(event) {
             const dataURL = signatureBox.toDataURL('image/png');
-            document.getElementById('assinatura').value = dataURL; // Armazena a assinatura no campo oculto
+            document.getElementById('assinatura').value = `<img src="${dataURL}"/>`; // Formata a assinatura como uma tag de imagem
         });
     </script>
 </body>
