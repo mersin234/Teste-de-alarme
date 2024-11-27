@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Teste do Sistema de Alarme</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -32,6 +33,7 @@
         label {
             display: block;
             margin: 10px 0 5px;
+            cursor: pointer;
         }
         textarea {
             width: 100%;
@@ -43,9 +45,9 @@
             height: 150px;
             touch-action: none;
             display: block;
-            margin: 10px 0;
+            margin: auto;
         }
-        button[type="submit"] {
+        button[type="button"] {
             display: block;
             margin: 20px auto;
             padding: 10px 20px;
@@ -54,21 +56,30 @@
             color: white;
             border: none;
             cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button[type="button"]:hover {
+            background-color: #45a049;
+        }
+        @media (max-width: 600px) {
+            .logo {
+                max-width: 100px;
+            }
         }
     </style>
 </head>
 <body>
-    <form id="alarmForm" action="https://formspree.io/f/xvgoakqv" method="POST">
+    <form id="alarmForm">
         <div class="logo-container">
             <img src="imagens/Logo.png" alt="Logo" class="logo">
             <h1>OSS-SP-HSE-F044 - Formulário de Teste do Sistema de Alarme</h1>
         </div>
 
         <div class="form-section">
-            <label>Data: <input type="date" name="data" required></label>
-            <label>Local: <input type="text" name="local" required></label>
-            <label>Brigadista: <input type="text" name="brigadista" required></label>
-            <label>Turno: <input type="text" name="turno" required></label>
+            <label for="data">Data: <input type="date" name="data" id="data" required></label>
+            <label for="local">Local: <input type="text" name="local" id="local" required></label>
+            <label for="brigadista">Brigadista: <input type="text" name="brigadista" id="brigadista" required></label>
+            <label for="turno">Turno: <input type="text" name="turno" id="turno" required></label>
         </div>
 
         <h2>Sinal Sonoro - Alarme de Emergência</h2>
@@ -122,15 +133,14 @@
 
         <h2>Assinatura:</h2>
         <canvas class="signature-box"></canvas>
-        <input type="hidden" name="assinatura" id="assinatura-hidden">
-
-        <button type="submit" onclick="saveSignature()">Enviar</button>
+        <button type="button" id="clear-signature">Limpar Assinatura</button>
+        
+        <button type="button" id="send-report">Enviar Relatório</button>
     </form>
 
     <script>
         const signatureBox = document.querySelector('.signature-box');
         const ctx = signatureBox.getContext('2d');
-        const hiddenInput = document.getElementById('assinatura-hidden');
         let isDrawing = false;
 
         function resizeCanvas() {
@@ -177,10 +187,19 @@
         signatureBox.addEventListener('touchend', stopDrawing);
         signatureBox.addEventListener('touchmove', draw);
 
-        function saveSignature() {
-            const dataURL = signatureBox.toDataURL('image/png');
-            hiddenInput.value = dataURL;
-        }
+        document.getElementById('clear-signature').addEventListener('click', () => {
+            ctx.clearRect(0, 0, signatureBox.width, signatureBox.height);
+        });
+
+        document.getElementById('send-report').addEventListener('click', () => {
+            const form = document.getElementById('alarmForm');
+            html2canvas(form).then((canvas) => {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL();
+                link.download = 'formulario_alarme.png';
+                link.click();
+            });
+        });
     </script>
 </body>
 </html>
