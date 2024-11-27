@@ -193,15 +193,13 @@
         });
 
         document.getElementById('send-report').addEventListener('click', () => {
-            const form = document.getElementById('alarmForm');
-            const formData = new FormData(form);
-
-            // Captura a imagem da assinatura
-            html2canvas(signatureBox).then(canvas => {
-                formData.append('signature', canvas.toDataURL());
-
-                // Aqui você pode enviar o formulário ou tratar os dados
-                alert('Relatório enviado com sucesso!');
+            html2canvas(document.body).then(canvas => {
+                const dataURL = canvas.toDataURL();
+                const reportData = {
+                    form: new FormData(document.getElementById('alarmForm')),
+                    signature: dataURL
+                };
+                console.log(reportData); // Simulando envio do formulário
             });
         });
     </script>
