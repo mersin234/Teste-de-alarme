@@ -147,6 +147,7 @@
             signatureBox.width = signatureBox.offsetWidth;
             signatureBox.height = signatureBox.offsetHeight;
             ctx.lineWidth = 2;
+            ctx.lineCap = 'round';  // Smooth drawing
         }
 
         resizeCanvas();
@@ -194,19 +195,14 @@
         document.getElementById('send-report').addEventListener('click', () => {
             const form = document.getElementById('alarmForm');
             const formData = new FormData(form);
-            mode: 'no-cors', // Força o envio sem validar CORS
 
-            // Converte a assinatura para imagem
-            const signatureImage = signatureBox.toDataURL("image/png");
-            formData.append("assinatura", signatureImage);
+            // Captura a imagem da assinatura
+            html2canvas(signatureBox).then(canvas => {
+                formData.append('signature', canvas.toDataURL());
 
-            // Aqui você pode adicionar o código para enviar o formData para o servidor
-            console.log("Formulário enviado com os seguintes dados:");
-            for (let [key, value] of formData.entries()) {
-                console.log(`${key}: ${value}`);
-            }
-
-            alert("Relatório enviado com sucesso!");
+                // Aqui você pode enviar o formulário ou tratar os dados
+                alert('Relatório enviado com sucesso!');
+            });
         });
     </script>
 </body>
