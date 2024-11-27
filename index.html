@@ -209,6 +209,7 @@
                 fetch('https://formspree.io/f/mjkvyrbv', {
                     method: 'POST',
                     body: formData
+                    mode: 'no-cors', // Adicionado
                 }).then(response => {
                     if (response.ok) {
                         alert('Relatório enviado com sucesso!');
