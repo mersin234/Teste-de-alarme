@@ -1,4 +1,3 @@
-html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -34,9 +33,6 @@ html
             display: block;
             margin: 10px 0 5px;
         }
-        .checkbox-group {
-            margin-bottom: 10px;
-        }
         textarea {
             width: 100%;
             height: 80px;
@@ -69,7 +65,7 @@ html
 </head>
 <body>
     <!-- Formulário com integração Formspree -->
-    <form action="https://formspree.io/f/xvgoakqv" method="POST">
+    <form id="alarmForm" action="https://formspree.io/f/xvgoakqv" method="POST">
         <div class="logo-container">
             <img src="imagens/Logo.png" alt="Logo" class="logo">
             <h1>OSS-SP-HSE-F044 - Formulário de Teste do Sistema de Alarme</h1>
@@ -133,6 +129,7 @@ html
 
         <h2>Assinatura:</h2>
         <canvas class="signature-box"></canvas>
+        <input type="hidden" name="assinatura" id="assinatura">
 
         <button type="submit">Enviar</button>
     </form>
@@ -189,6 +186,12 @@ html
         signatureBox.addEventListener('touchstart', startDrawing);
         signatureBox.addEventListener('touchend', stopDrawing);
         signatureBox.addEventListener('touchmove', draw);
+
+        // Captura a assinatura como imagem ao enviar o formulário
+        document.getElementById('alarmForm').addEventListener('submit', function(event) {
+            const dataURL = signatureBox.toDataURL('image/png');
+            document.getElementById('assinatura').value = dataURL; // Armazena a assinatura no campo oculto
+        });
     </script>
 </body>
 </html>
