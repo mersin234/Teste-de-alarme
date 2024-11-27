@@ -5,7 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Teste do Sistema de Alarme</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -33,7 +32,9 @@
         label {
             display: block;
             margin: 10px 0 5px;
-            cursor: pointer;
+        }
+        .checkbox-group {
+            margin-bottom: 10px;
         }
         textarea {
             width: 100%;
@@ -47,7 +48,7 @@
             display: block;
             margin: auto;
         }
-        button[type="button"] {
+        button[type="submit"] {
             display: block;
             margin: 20px auto;
             padding: 10px 20px;
@@ -56,11 +57,8 @@
             color: white;
             border: none;
             cursor: pointer;
-            transition: background-color 0.3s;
         }
-        button[type="button"]:hover {
-            background-color: #45a049;
-        }
+        /* Responsividade para telas menores */
         @media (max-width: 600px) {
             .logo {
                 max-width: 100px;
@@ -69,40 +67,41 @@
     </style>
 </head>
 <body>
-    <form id="alarmForm">
+    <!-- Formulário com integração Formspree -->
+    <form action="https://formspree.io/f/xvgoakqv" method="POST">
         <div class="logo-container">
             <img src="imagens/Logo.png" alt="Logo" class="logo">
             <h1>OSS-SP-HSE-F044 - Formulário de Teste do Sistema de Alarme</h1>
         </div>
 
         <div class="form-section">
-            <label for="data">Data: <input type="date" name="data" id="data" required></label>
-            <label for="local">Local: <input type="text" name="local" id="local" required></label>
-            <label for="brigadista">Brigadista: <input type="text" name="brigadista" id="brigadista" required></label>
-            <label for="turno">Turno: <input type="text" name="turno" id="turno" required></label>
+            <label>Data: <input type="date" name="data"></label>
+            <label>Local: <input type="text" name="local"></label>
+            <label>Brigadista: <input type="text" name="brigadista"></label>
+            <label>Turno: <input type="text" name="turno"></label>
         </div>
 
         <h2>Sinal Sonoro - Alarme de Emergência</h2>
         <div class="form-section">
             <label>
                 O Alarme tocou em sua área? 
-                <input type="radio" name="alarme_tocou" value="SIM" required> SIM
-                <input type="radio" name="alarme_tocou" value="NÃO"> NÃO
+                <input type="checkbox" name="alarme_tocou" value="SIM"> SIM
+                <input type="checkbox" name="alarme_tocou" value="NÃO"> NÃO
             </label>
             <label>
                 O toque foi audível a todos? 
-                <input type="radio" name="audivel_todos" value="SIM" required> SIM
-                <input type="radio" name="audivel_todos" value="NÃO"> NÃO
+                <input type="checkbox" name="audivel_todos" value="SIM"> SIM
+                <input type="checkbox" name="audivel_todos" value="NÃO"> NÃO
             </label>
             <label>
                 O tempo de disparo do alarme foi suficiente para reconhecê-lo? 
-                <input type="radio" name="tempo_disparo" value="SIM" required> SIM
-                <input type="radio" name="tempo_disparo" value="NÃO"> NÃO
+                <input type="checkbox" name="tempo_disparo" value="SIM"> SIM
+                <input type="checkbox" name="tempo_disparo" value="NÃO"> NÃO
             </label>
             <label>
                 A população local consegue reconhecer que trata-se do sinal sonoro do alarme de emergência? 
-                <input type="radio" name="sinal_reconhecido" value="SIM" required> SIM
-                <input type="radio" name="sinal_reconhecido" value="NÃO"> NÃO
+                <input type="checkbox" name="sinal_reconhecido" value="SIM"> SIM
+                <input type="checkbox" name="sinal_reconhecido" value="NÃO"> NÃO
             </label>
         </div>
 
@@ -113,18 +112,18 @@
         <div class="form-section">
             <label>
                 Abandonaram o local? 
-                <input type="radio" name="abandonaram_local" value="SIM" required> SIM
-                <input type="radio" name="abandonaram_local" value="NÃO"> NÃO
+                <input type="checkbox" name="abandonaram_local" value="SIM"> SIM
+                <input type="checkbox" name="abandonaram_local" value="NÃO"> NÃO
             </label>
             <label>
                 Pararam de trabalhar? 
-                <input type="radio" name="pararam_trabalhar" value="SIM" required> SIM
-                <input type="radio" name="pararam_trabalhar" value="NÃO"> NÃO
+                <input type="checkbox" name="pararam_trabalhar" value="SIM"> SIM
+                <input type="checkbox" name="pararam_trabalhar" value="NÃO"> NÃO
             </label>
             <label>
                 Tiveram dúvidas? 
-                <input type="radio" name="tiveram_duvidas" value="SIM" required> SIM
-                <input type="radio" name="tiveram_duvidas" value="NÃO"> NÃO
+                <input type="checkbox" name="tiveram_duvidas" value="SIM"> SIM
+                <input type="checkbox" name="tiveram_duvidas" value="NÃO"> NÃO
             </label>
         </div>
 
@@ -133,12 +132,12 @@
 
         <h2>Assinatura:</h2>
         <canvas class="signature-box"></canvas>
-        <button type="button" id="clear-signature">Limpar Assinatura</button>
-        
-        <button type="button" id="send-report">Enviar Relatório</button>
+
+        <button type="submit">Enviar</button>
     </form>
 
     <script>
+        // Script para permitir assinatura no canvas
         const signatureBox = document.querySelector('.signature-box');
         const ctx = signatureBox.getContext('2d');
         let isDrawing = false;
@@ -147,7 +146,6 @@
             signatureBox.width = signatureBox.offsetWidth;
             signatureBox.height = signatureBox.offsetHeight;
             ctx.lineWidth = 2;
-            ctx.lineCap = 'round';  // Smooth drawing
         }
 
         resizeCanvas();
@@ -187,21 +185,6 @@
         signatureBox.addEventListener('touchstart', startDrawing);
         signatureBox.addEventListener('touchend', stopDrawing);
         signatureBox.addEventListener('touchmove', draw);
-
-        document.getElementById('clear-signature').addEventListener('click', () => {
-            ctx.clearRect(0, 0, signatureBox.width, signatureBox.height);
-        });
-
-        document.getElementById('send-report').addEventListener('click', () => {
-            html2canvas(document.body).then(canvas => {
-                const dataURL = canvas.toDataURL();
-                const reportData = {
-                    form: new FormData(document.getElementById('alarmForm')),
-                    signature: dataURL
-                };
-                console.log(reportData); // Simulando envio do formulário
-            });
-        });
     </script>
 </body>
 </html>
