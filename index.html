@@ -91,12 +91,16 @@
         // Gerar a assinatura como imagem
         function captureSignatureAsImage() {
             const signatureBox = document.querySelector('.signature-box');
-            html2canvas(signatureBox).then(function(canvas) {
+            html2canvas(signatureBox, {
+                useCORS: true  // Adiciona essa configuração para garantir que a captura seja realizada sem problemas de CORS
+            }).then(function(canvas) {
                 const dataURL = canvas.toDataURL('image/png'); // Gerar a imagem em Base64
                 console.log(dataURL); // Visualizar o Base64 no console
 
                 // Aqui você pode agora enviar o Base64 para o backend ou diretamente no e-mail
                 sendEmailWithSignature(dataURL);
+            }).catch(function(error) {
+                console.error("Erro ao capturar a assinatura:", error);
             });
         }
 
