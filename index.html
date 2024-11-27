@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Teste do Sistema de Alarme</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -68,7 +69,7 @@
 </head>
 <body>
     <!-- Formulário com integração Formspree -->
-    <form action="https://formspree.io/f/xvgoakqv" method="POST">
+    <form id="form" action="https://formspree.io/f/xvgoakqv" method="POST" enctype="multipart/form-data">
         <div class="logo-container">
             <img src="imagens/Logo.png" alt="Logo" class="logo">
             <h1>OSS-SP-HSE-F044 - Formulário de Teste do Sistema de Alarme</h1>
@@ -133,7 +134,7 @@
         <h2>Assinatura:</h2>
         <canvas class="signature-box"></canvas>
 
-        <button type="submit">Enviar</button>
+        <button type="submit" id="submit-form">Enviar</button>
     </form>
 
     <script>
@@ -185,6 +186,31 @@
         signatureBox.addEventListener('touchstart', startDrawing);
         signatureBox.addEventListener('touchend', stopDrawing);
         signatureBox.addEventListener('touchmove', draw);
+
+        // Antes de enviar o formulário, gerar imagem da assinatura
+        document.getElementById('submit-form').addEventListener('click', function(event) {
+            event.preventDefault(); // Impedir o envio imediato
+            html2canvas(signatureBox).then(function(canvas) {
+                canvas.toBlob(function(blob) {
+                    const file = new File([blob], "assinatura.png", { type: "image/png" });
+                    const formData = new FormData(document.getElementById('form'));
+                    formData.append('assinatura', file);  // Adicionar a imagem como anexo
+
+                    // Enviar o formulário com a imagem da assinatura como anexo
+                    fetch('https://formspree.io/f/xvgoakqv', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Formulário enviado com sucesso!', data);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao enviar o formulário:', error);
+                    });
+                });
+            });
+        });
     </script>
 </body>
 </html>
