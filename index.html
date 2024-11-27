@@ -1,3 +1,4 @@
+html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -75,10 +76,10 @@
         </div>
 
         <div class="form-section">
-            <label>Data: <input type="date" name="data"></label>
-            <label>Local: <input type="text" name="local"></label>
-            <label>Brigadista: <input type="text" name="brigadista"></label>
-            <label>Turno: <input type="text" name="turno"></label>
+            <label>Data: <input type="date" name="data" required></label>
+            <label>Local: <input type="text" name="local" required></label>
+            <label>Brigadista: <input type="text" name="brigadista" required></label>
+            <label>Turno: <input type="text" name="turno" required></label>
         </div>
 
         <h2>Sinal Sonoro - Alarme de Emergência</h2>
@@ -146,6 +147,8 @@
             signatureBox.width = signatureBox.offsetWidth;
             signatureBox.height = signatureBox.offsetHeight;
             ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#000';
         }
 
         resizeCanvas();
@@ -160,6 +163,7 @@
 
         function stopDrawing() {
             isDrawing = false;
+            ctx.closePath();
         }
 
         function draw(event) {
