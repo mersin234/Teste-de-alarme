@@ -68,8 +68,7 @@
     </style>
 </head>
 <body>
-    <!-- Formulário com integração Formspree -->
-    <form id="form" action="https://formspree.io/f/xvgoakqv" method="POST" enctype="multipart/form-data">
+    <form id="alarme-form" action="https://formspree.io/f/xvgoakqv" method="POST">
         <div class="logo-container">
             <img src="imagens/Logo.png" alt="Logo" class="logo">
             <h1>OSS-SP-HSE-F044 - Formulário de Teste do Sistema de Alarme</h1>
@@ -82,134 +81,41 @@
             <label>Turno: <input type="text" name="turno"></label>
         </div>
 
-        <h2>Sinal Sonoro - Alarme de Emergência</h2>
-        <div class="form-section">
-            <label>
-                O Alarme tocou em sua área? 
-                <input type="checkbox" name="alarme_tocou" value="SIM"> SIM
-                <input type="checkbox" name="alarme_tocou" value="NÃO"> NÃO
-            </label>
-            <label>
-                O toque foi audível a todos? 
-                <input type="checkbox" name="audivel_todos" value="SIM"> SIM
-                <input type="checkbox" name="audivel_todos" value="NÃO"> NÃO
-            </label>
-            <label>
-                O tempo de disparo do alarme foi suficiente para reconhecê-lo? 
-                <input type="checkbox" name="tempo_disparo" value="SIM"> SIM
-                <input type="checkbox" name="tempo_disparo" value="NÃO"> NÃO
-            </label>
-            <label>
-                A população local consegue reconhecer que trata-se do sinal sonoro do alarme de emergência? 
-                <input type="checkbox" name="sinal_reconhecido" value="SIM"> SIM
-                <input type="checkbox" name="sinal_reconhecido" value="NÃO"> NÃO
-            </label>
-        </div>
-
-        <label>Observações:</label>
-        <textarea name="observacoes_sinal"></textarea>
-
-        <h2>Comportamento da população durante o teste:</h2>
-        <div class="form-section">
-            <label>
-                Abandonaram o local? 
-                <input type="checkbox" name="abandonaram_local" value="SIM"> SIM
-                <input type="checkbox" name="abandonaram_local" value="NÃO"> NÃO
-            </label>
-            <label>
-                Pararam de trabalhar? 
-                <input type="checkbox" name="pararam_trabalhar" value="SIM"> SIM
-                <input type="checkbox" name="pararam_trabalhar" value="NÃO"> NÃO
-            </label>
-            <label>
-                Tiveram dúvidas? 
-                <input type="checkbox" name="tiveram_duvidas" value="SIM"> SIM
-                <input type="checkbox" name="tiveram_duvidas" value="NÃO"> NÃO
-            </label>
-        </div>
-
-        <label>Observações:</label>
-        <textarea name="observacoes_comportamento"></textarea>
-
-        <h2>Assinatura:</h2>
+        <label>Assinatura:</label>
         <canvas class="signature-box"></canvas>
 
         <button type="submit" id="submit-form">Enviar</button>
     </form>
 
     <script>
-        // Script para permitir assinatura no canvas
-        const signatureBox = document.querySelector('.signature-box');
-        const ctx = signatureBox.getContext('2d');
-        let isDrawing = false;
-
-        function resizeCanvas() {
-            signatureBox.width = signatureBox.offsetWidth;
-            signatureBox.height = signatureBox.offsetHeight;
-            ctx.lineWidth = 2;
-        }
-
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        function startDrawing(event) {
-            isDrawing = true;
-            ctx.beginPath();
-            ctx.moveTo(getX(event), getY(event));
-            event.preventDefault();
-        }
-
-        function stopDrawing() {
-            isDrawing = false;
-        }
-
-        function draw(event) {
-            if (!isDrawing) return;
-            ctx.lineTo(getX(event), getY(event));
-            ctx.stroke();
-            event.preventDefault();
-        }
-
-        function getX(event) {
-            const rect = signatureBox.getBoundingClientRect();
-            return (event.touches ? event.touches[0].clientX : event.clientX) - rect.left;
-        }
-
-        function getY(event) {
-            const rect = signatureBox.getBoundingClientRect();
-            return (event.touches ? event.touches[0].clientY : event.clientY) - rect.top;
-        }
-
-        signatureBox.addEventListener('mousedown', startDrawing);
-        signatureBox.addEventListener('mouseup', stopDrawing);
-        signatureBox.addEventListener('mousemove', draw);
-        signatureBox.addEventListener('touchstart', startDrawing);
-        signatureBox.addEventListener('touchend', stopDrawing);
-        signatureBox.addEventListener('touchmove', draw);
-
-        // Antes de enviar o formulário, gerar imagem da assinatura
-        document.getElementById('submit-form').addEventListener('click', function(event) {
-            event.preventDefault(); // Impedir o envio imediato
+        // Gerar a assinatura como imagem
+        function captureSignatureAsImage() {
+            const signatureBox = document.querySelector('.signature-box');
             html2canvas(signatureBox).then(function(canvas) {
-                canvas.toBlob(function(blob) {
-                    const file = new File([blob], "assinatura.png", { type: "image/png" });
-                    const formData = new FormData(document.getElementById('form'));
-                    formData.append('assinatura', file);  // Adicionar a imagem como anexo
+                const dataURL = canvas.toDataURL('image/png'); // Gerar a imagem em Base64
+                console.log(dataURL); // Visualizar o Base64 no console
 
-                    // Enviar o formulário com a imagem da assinatura como anexo
-                    fetch('https://formspree.io/f/xvgoakqv', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Formulário enviado com sucesso!', data);
-                    })
-                    .catch(error => {
-                        console.error('Erro ao enviar o formulário:', error);
-                    });
-                });
+                // Aqui você pode agora enviar o Base64 para o backend ou diretamente no e-mail
+                sendEmailWithSignature(dataURL);
             });
+        }
+
+        // Função para enviar o e-mail com a assinatura embutida
+        function sendEmailWithSignature(imageData) {
+            const subject = 'Formulário de Teste do Sistema de Alarme';
+            const body = `
+                <h1>Formulário de Teste do Sistema de Alarme</h1>
+                <p>Segue abaixo o relatório do teste realizado.</p>
+                <p><img src="${imageData}" alt="Assinatura" /></p>
+            `;
+            const mailtoLink = `mailto:email@example.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;  // Dispara o envio do e-mail com a assinatura em Base64
+        }
+
+        // Captura a assinatura quando o formulário for enviado
+        document.getElementById('submit-form').addEventListener('click', function(event) {
+            event.preventDefault(); // Previne o envio direto
+            captureSignatureAsImage(); // Gerar a imagem e enviar o e-mail
         });
     </script>
 </body>
