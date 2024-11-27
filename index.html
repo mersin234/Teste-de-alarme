@@ -3,11 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário com Assinatura</title>
+    <title>Formulário de Teste do Sistema de Alarme</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+        }
+        h1 {
+            font-weight: bold;
+            text-align: center;
+            margin-top: 0;
+        }
+        .logo-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+        .form-section {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        .checkbox-group {
+            margin-bottom: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
         }
         .signature-box {
             border: 1px solid #000;
@@ -15,20 +45,96 @@
             height: 150px;
             touch-action: none;
             display: block;
-            margin: 10px 0;
+            margin: auto;
+        }
+        button[type="submit"], button[type="button"] {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button[type="button"] {
+            background-color: #f44336;
+        }
+        @media (max-width: 600px) {
+            .logo {
+                max-width: 100px;
+            }
         }
     </style>
 </head>
 <body>
-    <form action="https://formspree.io/f/xvgoakqv" method="POST">
-        <h1>Formulário com Assinatura</h1>
-        <label>Nome: <input type="text" name="nome"></label><br>
-        <label>Data: <input type="date" name="data"></label><br>
-        
+    <!-- Formulário com integração Formspree -->
+    <form id="alarmForm" action="https://formspree.io/f/xvgoakqv" method="POST">
+        <div class="logo-container">
+            <img src="imagens/Logo.png" alt="Logo" class="logo">
+            <h1>OSS-SP-HSE-F044 - Formulário de Teste do Sistema de Alarme</h1>
+        </div>
+
+        <div class="form-section">
+            <label>Data: <input type="date" name="data"></label>
+            <label>Local: <input type="text" name="local"></label>
+            <label>Brigadista: <input type="text" name="brigadista"></label>
+            <label>Turno: <input type="text" name="turno"></label>
+        </div>
+
+        <h2>Sinal Sonoro - Alarme de Emergência</h2>
+        <div class="form-section">
+            <label>
+                O Alarme tocou em sua área? 
+                <input type="checkbox" name="alarme_tocou" value="SIM"> SIM
+                <input type="checkbox" name="alarme_tocou" value="NÃO"> NÃO
+            </label>
+            <label>
+                O toque foi audível a todos? 
+                <input type="checkbox" name="audivel_todos" value="SIM"> SIM
+                <input type="checkbox" name="audivel_todos" value="NÃO"> NÃO
+            </label>
+            <label>
+                O tempo de disparo do alarme foi suficiente para reconhecê-lo? 
+                <input type="checkbox" name="tempo_disparo" value="SIM"> SIM
+                <input type="checkbox" name="tempo_disparo" value="NÃO"> NÃO
+            </label>
+            <label>
+                A população local consegue reconhecer que trata-se do sinal sonoro do alarme de emergência? 
+                <input type="checkbox" name="sinal_reconhecido" value="SIM"> SIM
+                <input type="checkbox" name="sinal_reconhecido" value="NÃO"> NÃO
+            </label>
+        </div>
+
+        <label>Observações:</label>
+        <textarea name="observacoes_sinal"></textarea>
+
+        <h2>Comportamento da população durante o teste:</h2>
+        <div class="form-section">
+            <label>
+                Abandonaram o local? 
+                <input type="checkbox" name="abandonaram_local" value="SIM"> SIM
+                <input type="checkbox" name="abandonaram_local" value="NÃO"> NÃO
+            </label>
+            <label>
+                Pararam de trabalhar? 
+                <input type="checkbox" name="pararam_trabalhar" value="SIM"> SIM
+                <input type="checkbox" name="pararam_trabalhar" value="NÃO"> NÃO
+            </label>
+            <label>
+                Tiveram dúvidas? 
+                <input type="checkbox" name="tiveram_duvidas" value="SIM"> SIM
+                <input type="checkbox" name="tiveram_duvidas" value="NÃO"> NÃO
+            </label>
+        </div>
+
+        <label>Observações:</label>
+        <textarea name="observacoes_comportamento"></textarea>
+
         <h2>Assinatura:</h2>
         <canvas class="signature-box"></canvas>
         <input type="hidden" name="assinatura" id="assinatura-hidden">
-        
+
         <button type="button" id="clear-signature">Limpar Assinatura</button>
         <button type="submit" onclick="saveSignature()">Enviar</button>
     </form>
@@ -39,7 +145,6 @@
         const hiddenInput = document.getElementById('assinatura-hidden');
         let isDrawing = false;
 
-        // Redimensiona o canvas
         function resizeCanvas() {
             signatureBox.width = signatureBox.offsetWidth;
             signatureBox.height = signatureBox.offsetHeight;
@@ -49,7 +154,6 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // Funções de desenho
         function startDrawing(event) {
             isDrawing = true;
             ctx.beginPath();
@@ -85,15 +189,13 @@
         signatureBox.addEventListener('touchend', stopDrawing);
         signatureBox.addEventListener('touchmove', draw);
 
-        // Limpar assinatura
         document.getElementById('clear-signature').addEventListener('click', () => {
             ctx.clearRect(0, 0, signatureBox.width, signatureBox.height);
         });
 
-        // Salvar assinatura no campo oculto
         function saveSignature() {
             const dataURL = signatureBox.toDataURL('image/png');
-            hiddenInput.value = dataURL; // Armazena a imagem Base64 no campo oculto
+            hiddenInput.value = dataURL; // Adiciona a assinatura em Base64 ao campo oculto
         }
     </script>
 </body>
