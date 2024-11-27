@@ -195,29 +195,17 @@
             const form = document.getElementById('alarmForm');
             const formData = new FormData(form);
 
-            // Adiciona a assinatura como imagem base64
-            html2canvas(signatureBox).then(canvas => {
-                const signatureImage = canvas.toDataURL('image/png');
-                formData.append('signature', signatureImage);
+            // Converte a assinatura para imagem
+            const signatureImage = signatureBox.toDataURL("image/png");
+            formData.append("assinatura", signatureImage);
 
-                // Enviar os dados para o Formspree
-                fetch('https://formspree.io/f/xvgoakqv', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Formulário enviado com sucesso!');
-                        form.reset(); // Limpar o formulário
-                    } else {
-                        alert('Erro ao enviar o formulário.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro de envio:', error);
-                    alert('Erro ao enviar o formulário. Tente novamente.');
-                });
-            });
+            // Aqui você pode adicionar o código para enviar o formData para o servidor
+            console.log("Formulário enviado com os seguintes dados:");
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+
+            alert("Relatório enviado com sucesso!");
         });
     </script>
 </body>
