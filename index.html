@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Teste do Sistema de Alarme</title>
     <style>
@@ -32,9 +33,6 @@
             display: block;
             margin: 10px 0 5px;
         }
-        .checkbox-group {
-            margin-bottom: 10px;
-        }
         textarea {
             width: 100%;
             height: 80px;
@@ -45,9 +43,9 @@
             height: 150px;
             touch-action: none;
             display: block;
-            margin: auto;
+            margin: 10px 0;
         }
-        button[type="submit"], button[type="button"] {
+        button[type="submit"] {
             display: block;
             margin: 20px auto;
             padding: 10px 20px;
@@ -57,18 +55,9 @@
             border: none;
             cursor: pointer;
         }
-        button[type="button"] {
-            background-color: #f44336;
-        }
-        @media (max-width: 600px) {
-            .logo {
-                max-width: 100px;
-            }
-        }
     </style>
 </head>
 <body>
-    <!-- Formulário com integração Formspree -->
     <form id="alarmForm" action="https://formspree.io/f/xvgoakqv" method="POST">
         <div class="logo-container">
             <img src="imagens/Logo.png" alt="Logo" class="logo">
@@ -76,33 +65,33 @@
         </div>
 
         <div class="form-section">
-            <label>Data: <input type="date" name="data"></label>
-            <label>Local: <input type="text" name="local"></label>
-            <label>Brigadista: <input type="text" name="brigadista"></label>
-            <label>Turno: <input type="text" name="turno"></label>
+            <label>Data: <input type="date" name="data" required></label>
+            <label>Local: <input type="text" name="local" required></label>
+            <label>Brigadista: <input type="text" name="brigadista" required></label>
+            <label>Turno: <input type="text" name="turno" required></label>
         </div>
 
         <h2>Sinal Sonoro - Alarme de Emergência</h2>
         <div class="form-section">
             <label>
                 O Alarme tocou em sua área? 
-                <input type="checkbox" name="alarme_tocou" value="SIM"> SIM
-                <input type="checkbox" name="alarme_tocou" value="NÃO"> NÃO
+                <input type="radio" name="alarme_tocou" value="SIM" required> SIM
+                <input type="radio" name="alarme_tocou" value="NÃO"> NÃO
             </label>
             <label>
                 O toque foi audível a todos? 
-                <input type="checkbox" name="audivel_todos" value="SIM"> SIM
-                <input type="checkbox" name="audivel_todos" value="NÃO"> NÃO
+                <input type="radio" name="audivel_todos" value="SIM" required> SIM
+                <input type="radio" name="audivel_todos" value="NÃO"> NÃO
             </label>
             <label>
                 O tempo de disparo do alarme foi suficiente para reconhecê-lo? 
-                <input type="checkbox" name="tempo_disparo" value="SIM"> SIM
-                <input type="checkbox" name="tempo_disparo" value="NÃO"> NÃO
+                <input type="radio" name="tempo_disparo" value="SIM" required> SIM
+                <input type="radio" name="tempo_disparo" value="NÃO"> NÃO
             </label>
             <label>
                 A população local consegue reconhecer que trata-se do sinal sonoro do alarme de emergência? 
-                <input type="checkbox" name="sinal_reconhecido" value="SIM"> SIM
-                <input type="checkbox" name="sinal_reconhecido" value="NÃO"> NÃO
+                <input type="radio" name="sinal_reconhecido" value="SIM" required> SIM
+                <input type="radio" name="sinal_reconhecido" value="NÃO"> NÃO
             </label>
         </div>
 
@@ -113,18 +102,18 @@
         <div class="form-section">
             <label>
                 Abandonaram o local? 
-                <input type="checkbox" name="abandonaram_local" value="SIM"> SIM
-                <input type="checkbox" name="abandonaram_local" value="NÃO"> NÃO
+                <input type="radio" name="abandonaram_local" value="SIM" required> SIM
+                <input type="radio" name="abandonaram_local" value="NÃO"> NÃO
             </label>
             <label>
                 Pararam de trabalhar? 
-                <input type="checkbox" name="pararam_trabalhar" value="SIM"> SIM
-                <input type="checkbox" name="pararam_trabalhar" value="NÃO"> NÃO
+                <input type="radio" name="pararam_trabalhar" value="SIM" required> SIM
+                <input type="radio" name="pararam_trabalhar" value="NÃO"> NÃO
             </label>
             <label>
                 Tiveram dúvidas? 
-                <input type="checkbox" name="tiveram_duvidas" value="SIM"> SIM
-                <input type="checkbox" name="tiveram_duvidas" value="NÃO"> NÃO
+                <input type="radio" name="tiveram_duvidas" value="SIM" required> SIM
+                <input type="radio" name="tiveram_duvidas" value="NÃO"> NÃO
             </label>
         </div>
 
@@ -135,7 +124,6 @@
         <canvas class="signature-box"></canvas>
         <input type="hidden" name="assinatura" id="assinatura-hidden">
 
-        <button type="button" id="clear-signature">Limpar Assinatura</button>
         <button type="submit" onclick="saveSignature()">Enviar</button>
     </form>
 
@@ -189,13 +177,9 @@
         signatureBox.addEventListener('touchend', stopDrawing);
         signatureBox.addEventListener('touchmove', draw);
 
-        document.getElementById('clear-signature').addEventListener('click', () => {
-            ctx.clearRect(0, 0, signatureBox.width, signatureBox.height);
-        });
-
         function saveSignature() {
             const dataURL = signatureBox.toDataURL('image/png');
-            hiddenInput.value = dataURL; // Adiciona a assinatura em Base64 ao campo oculto
+            hiddenInput.value = dataURL;
         }
     </script>
 </body>
