@@ -195,27 +195,30 @@
             const form = document.getElementById('alarmForm');
             const formData = new FormData(form);
 
-            // Adiciona a assinatura ao FormData
-            const signatureDataUrl = signatureBox.toDataURL(); // Captura a imagem da assinatura
-            formData.append('signature', signatureDataUrl);
+            // Adiciona a assinatura como imagem base64
+            html2canvas(signatureBox).then(canvas => {
+                const signatureImage = canvas.toDataURL('image/png');
+                formData.append('signature', signatureImage);
 
-            // Envia os dados para o Formspree
-            fetch('https://formspree.io/f/xvgoakqv', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Relatório enviado com sucesso!');
-                } else {
-                    alert('Erro ao enviar relatório!');
-                    console.error('Erro no envio:', response);
-                }
-            })
-            .catch(error => {
-                alert('Erro ao enviar o relatório!');
-                console.error('Erro de rede:', error);
+                // Enviar os dados para o Formspree
+                fetch('https://formspree.io/f/xvgoakqv', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Formulário enviado com sucesso!');
+                        form.reset(); // Limpar o formulário
+                    } else {
+                        alert('Erro ao enviar o formulário.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro de envio:', error);
+                    alert('Erro ao enviar o formulário. Tente novamente.');
+                });
             });
         });
     </script>
 </body>
+</html>
