@@ -89,7 +89,7 @@
             e.preventDefault();
 
             // Captura a assinatura como base64
-            const signatureData = signatureCanvas.toDataURL();
+            const signatureData = signatureCanvas.toDataURL('image/png');
 
             // Monta o corpo do e-mail
             const name = document.getElementById('name').value;
@@ -97,19 +97,22 @@
             const message = document.getElementById('message').value;
 
             const emailBody = `
-                <p><strong>Nome:</strong> ${name}</p>
-                <p><strong>E-mail:</strong> ${email}</p>
-                <p><strong>Mensagem:</strong></p>
-                <p>${message}</p>
-                <p><strong>Assinatura:</strong></p>
-                <img src="${signatureData}" alt="Assinatura" style="border:1px solid #ccc; max-width:100%; height:auto;">
+                Nome: ${name}\n
+                E-mail: ${email}\n
+                Mensagem: ${message}\n
+                Assinatura em anexo.
             `;
 
-            // Enviar via Formspree
+            // Converter base64 para Blob
+            const signatureBlob = await fetch(signatureData).then(res => res.blob());
+
+            // Criar o FormData
             const formData = new FormData();
             formData.append('_replyto', email);
             formData.append('message', emailBody);
+            formData.append('attachment', signatureBlob, 'signature.png');
 
+            // Enviar via Formspree
             const response = await fetch('https://formspree.io/f/xvgoakqv', {
                 method: 'POST',
                 body: formData,
