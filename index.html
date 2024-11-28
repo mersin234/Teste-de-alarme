@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Teste do Sistema de Alarme</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -47,7 +47,8 @@
             display: block;
             margin: auto;
         }
-        button[type="button"], button[type="submit"] {
+        button[type="submit"],
+        button[type="button"] {
             display: block;
             margin: 20px auto;
             padding: 10px 20px;
@@ -58,6 +59,7 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
+        button[type="submit"]:hover,
         button[type="button"]:hover {
             background-color: #45a049;
         }
@@ -84,23 +86,19 @@
 
         <h2>Sinal Sonoro - Alarme de Emergência</h2>
         <div class="form-section">
-            <label>
-                O Alarme tocou em sua área? 
+            <label>O Alarme tocou em sua área? 
                 <input type="radio" name="alarme_tocou" value="SIM" required> SIM
                 <input type="radio" name="alarme_tocou" value="NÃO"> NÃO
             </label>
-            <label>
-                O toque foi audível a todos? 
+            <label>O toque foi audível a todos? 
                 <input type="radio" name="audivel_todos" value="SIM" required> SIM
                 <input type="radio" name="audivel_todos" value="NÃO"> NÃO
             </label>
-            <label>
-                O tempo de disparo do alarme foi suficiente para reconhecê-lo? 
+            <label>O tempo de disparo do alarme foi suficiente para reconhecê-lo? 
                 <input type="radio" name="tempo_disparo" value="SIM" required> SIM
                 <input type="radio" name="tempo_disparo" value="NÃO"> NÃO
             </label>
-            <label>
-                A população local consegue reconhecer que trata-se do sinal sonoro do alarme de emergência? 
+            <label>A população local consegue reconhecer que trata-se do sinal sonoro do alarme de emergência? 
                 <input type="radio" name="sinal_reconhecido" value="SIM" required> SIM
                 <input type="radio" name="sinal_reconhecido" value="NÃO"> NÃO
             </label>
@@ -111,18 +109,15 @@
 
         <h2>Comportamento da população durante o teste:</h2>
         <div class="form-section">
-            <label>
-                Abandonaram o local? 
+            <label>Abandonaram o local? 
                 <input type="radio" name="abandonaram_local" value="SIM" required> SIM
                 <input type="radio" name="abandonaram_local" value="NÃO"> NÃO
             </label>
-            <label>
-                Pararam de trabalhar? 
+            <label>Pararam de trabalhar? 
                 <input type="radio" name="pararam_trabalhar" value="SIM" required> SIM
                 <input type="radio" name="pararam_trabalhar" value="NÃO"> NÃO
             </label>
-            <label>
-                Tiveram dúvidas? 
+            <label>Tiveram dúvidas? 
                 <input type="radio" name="tiveram_duvidas" value="SIM" required> SIM
                 <input type="radio" name="tiveram_duvidas" value="NÃO"> NÃO
             </label>
@@ -134,13 +129,10 @@
         <h2>Assinatura:</h2>
         <canvas class="signature-box"></canvas>
         <button type="button" id="clear-signature">Limpar Assinatura</button>
-
-        <input type="hidden" name="pdf_data" id="pdf_data">
         <button type="submit">Enviar Relatório</button>
     </form>
 
     <script>
-        const { jsPDF } = window.jspdf;
         const signatureBox = document.querySelector('.signature-box');
         const ctx = signatureBox.getContext('2d');
         let isDrawing = false;
@@ -193,31 +185,13 @@
             ctx.clearRect(0, 0, signatureBox.width, signatureBox.height);
         });
 
-        document.getElementById('alarmForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const pdf = new jsPDF();
-            pdf.text('Formulário de Teste do Sistema de Alarme', 10, 10);
-
-            const formData = new FormData(document.getElementById('alarmForm'));
-            let yPosition = 20;
-
-            formData.forEach((value, key) => {
-                if (key !== "pdf_data") {
-                    pdf.text(`${key}: ${value}`, 10, yPosition);
-                    yPosition += 10;
-                }
-            });
-
-            const signatureDataURL = signatureBox.toDataURL("image/png");
-            if (signatureDataURL) {
-                pdf.addImage(signatureDataURL, 'PNG', 10, yPosition, 100, 30);
-            }
-
-            const pdfData = pdf.output('datauristring');
-            document.getElementById('pdf_data').value = pdfData;
-
-            e.target.submit();
+        document.querySelector('#alarmForm').addEventListener('submit', function(event) {
+            const signatureDataURL = signatureBox.toDataURL('image/png');
+            const signatureField = document.createElement('input');
+            signatureField.type = 'hidden';
+            signatureField.name = 'assinatura';
+            signatureField.value = signatureDataURL;
+            this.appendChild(signatureField);
         });
     </script>
 </body>
